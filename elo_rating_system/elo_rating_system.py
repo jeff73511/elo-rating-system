@@ -158,6 +158,13 @@ class Tournament:
     home_team_country: str = "NL"
     home_advantage: NonNegativeInt = 0
     k_factor: PositiveInt = 32
+    actual_score_option: str = "win_draw_loss"
+
+    def __post_init__(self):
+        """Updates the ratings of the teams based on the match results and Elo algorithm."""
+        for match in self.matches:
+            if match.team1_score and match.team2_score:
+                match.update_ratings(self.actual_score_option)
 
     def add_match(self, team1_name: str, team2_name: str, team1_score: NonNegativeInt, team2_score: NonNegativeInt,
                   actual_score_option: str = "win_draw_loss") -> None:
@@ -206,10 +213,3 @@ class Tournament:
             team2_score = row.TEAM2_SCORE
 
             self.add_match(team1_name, team2_name, team1_score, team2_score, actual_score_option)
-
-
-# import os
-# os.chdir(r"C:\\Users\\c.chen\\PycharmProjects\\elo-rating-system\\elo_rating_system")
-# import pandas as pd
-#
-# df = pd.read_csv("UEFA_Womens_EURO_2017.csv")

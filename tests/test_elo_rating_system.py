@@ -1,3 +1,4 @@
+import itertools
 import pytest
 from elo_rating_system.elo_rating_system import (
     actual_score_win_draw_loss,
@@ -71,6 +72,12 @@ def test_tournament_add_match(tournament):
     assert tournament.matches[-1].team2_score == team2_score
     assert tournament.matches[-1].ratings_updated_after_match
 
+    for team, match in itertools.product(tournament.teams, tournament.matches):
+        if match.team1 == team:
+            assert match.team1_rating_updated == match.team1.rating == team.rating
+        if match.team2 == team:
+            assert match.team2_rating_updated == match.team2.rating == team.rating
+
 
 def test_tournament_add_matches_from_csv(tournament, csv_file_fixture):
     tournament.add_matches_from_csv(csv_file_fixture)
@@ -83,3 +90,9 @@ def test_tournament_add_matches_from_csv(tournament, csv_file_fixture):
     assert last_match.team1_score == 2
     assert last_match.team2_score == 2
     assert last_match.ratings_updated_after_match
+
+    for team, match in itertools.product(tournament.teams, tournament.matches):
+        if match.team1 == team:
+            assert match.team1_rating_updated == match.team1.rating == team.rating
+        if match.team2 == team:
+            assert match.team2_rating_updated == match.team2.rating == team.rating
